@@ -1,3 +1,6 @@
+# 1.0.5
+- Disable touch on badges if not in Badge Popup
+
 # 1.0.4
 - Fix a goof
 

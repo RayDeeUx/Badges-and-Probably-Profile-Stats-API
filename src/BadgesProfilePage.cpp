@@ -191,6 +191,18 @@ void BadgesProfilePage::updateBadges() {
     }
 }
 
+void BadgesProfilePage::unregisterTouchesRecursive(CCNode* node) {
+    if (!node) return;
+
+    if (auto delegate = typeinfo_cast<CCTouchDelegate*>(node)) {
+        CCTouchDispatcher::get()->removeDelegate(delegate);
+    }
+
+    for (auto child : node->getChildrenExt()) {
+        unregisterTouchesRecursive(child);
+    }
+}
+
 void BadgesProfilePage::addToBadgeContainer(const BadgeInfo& info) {
     auto fields = m_fields.self();
     if (!info.createBadge) return;
@@ -204,8 +216,11 @@ void BadgesProfilePage::addToBadgeContainer(const BadgeInfo& info) {
         node->setScale(scale);
         node->setZOrder(-fields->m_badges.size());
         node->setID(fmt::format("{}-badge", info.id));
-        
+
         fields->m_badgeNode->addChild(node);
+        runAction(CallFuncExt::create([this, node] {
+            unregisterTouchesRecursive(node);
+        }));
 
         updateBadges();
     }
@@ -224,7 +239,10 @@ void BadgesProfilePage::addToBadgeContainer(const BadgeInfo& info) {
         btn->setTag(fields->m_badges.size() - 1);
 
         fields->m_badgeMenu->addChild(btn);
-
+        runAction(CallFuncExt::create([this, node] {
+            unregisterTouchesRecursive(node);
+        }));
+        
         updateBadges();
     }
 }

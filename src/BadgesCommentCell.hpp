@@ -22,6 +22,7 @@ class $modify(BadgesCommentCell, CommentCell) {
     void loadFromComment(GJComment* comment);
     void addBadge(const BadgeInfo& info);
     void updateBadges();
+    void unregisterTouchesRecursive(CCNode* node);
     void addToBadgeContainer(const BadgeInfo& info);
     void onBadges(CCObject* sender);
 };
