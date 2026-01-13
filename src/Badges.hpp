@@ -26,8 +26,9 @@ public:
     void setShouldShowInProfiles(const std::string& id, const bool shouldShow);
     bool getShouldShowInProfiles(const std::string& id);
 
-
     void registerBadge(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile);
+    void registerBadgeAdvanced(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile, const bool showInComments, const bool showInProfiles);
+
     void unregisterBadge(const std::string& id);
 
 private:

@@ -87,7 +87,11 @@ bool Badges::getShouldShowInProfiles(const std::string& id) {
 }
 
 void Badges::registerBadge(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile) {
-    m_badges.emplace(id, BadgeInfo{id, name, description, std::move(createBadge), std::move(onProfile)});
+    m_badges.emplace(id, BadgeInfo{id, name, description, std::move(createBadge), std::move(onProfile), true, true});
+}
+
+void Badges::registerBadgeAdvanced(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile, const bool showInComments, const bool showInProfiles) {
+    m_badges.emplace(id, BadgeInfo{id, name, description, std::move(createBadge), std::move(onProfile), showInComments, showInProfiles});
 }
 
 void Badges::unregisterBadge(const std::string& id) {

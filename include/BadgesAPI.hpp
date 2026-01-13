@@ -31,14 +31,20 @@ struct BadgeInfo {
     std::string description;
     BadgeCallback createBadge;
     ProfileCallback onProfile;
-    bool showInComments = true;
-    bool showInProfiles = true;
+    bool showInComments;
+    bool showInProfiles;
 };
 
 namespace BadgesAPI {
     struct RegisterBadgeEvent final : geode::Event {
         RegisterBadgeEvent() {}
         using Fn = void(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile);
+        Fn* fn = nullptr;
+    };
+
+    struct RegisterBadgeAdvancedEvent final : geode::Event {
+        RegisterBadgeAdvancedEvent() {}
+        using Fn = void(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile, const bool showInComments, const bool showInProfiles);
         Fn* fn = nullptr;
     };
 
@@ -144,6 +150,18 @@ namespace BadgesAPI {
                 return event.fn;
             })();
             if (fn) fn(id, name, description, createBadge, onProfile);
+        });
+    }
+
+    template <typename F, typename G>
+    inline void registerBadgeAdvanced(const std::string& id, const std::string& name, const std::string& description, F&& createBadge, G&& onProfile, const bool showInComments, const bool showInProfiles) {
+        waitForBadges([=] {
+            static auto fn = ([] {
+                RegisterBadgeAdvancedEvent event;
+                event.post();
+                return event.fn;
+            })();
+            if (fn) fn(id, name, description, createBadge, onProfile, showInComments, showInProfiles);
         });
     }
 
