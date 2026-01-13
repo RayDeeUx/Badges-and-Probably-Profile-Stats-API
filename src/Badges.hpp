@@ -19,6 +19,14 @@ public:
 
     void setCreateBadgeCallback(const std::string& id, BadgeCallback&& createBadge);
     void setProfileCallback(const std::string& id, ProfileCallback&& onProfile);
+
+    void setShouldShowInComments(const std::string& id, const bool shouldShow);
+    bool getShouldShowInComments(const std::string& id);
+
+    void setShouldShowInProfiles(const std::string& id, const bool shouldShow);
+    bool getShouldShowInProfiles(const std::string& id);
+
+
     void registerBadge(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile);
     void unregisterBadge(const std::string& id);
 

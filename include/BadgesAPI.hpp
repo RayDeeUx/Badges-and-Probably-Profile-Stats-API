@@ -31,6 +31,8 @@ struct BadgeInfo {
     std::string description;
     BadgeCallback createBadge;
     ProfileCallback onProfile;
+    bool showInComments = true;
+    bool showInProfiles = true;
 };
 
 namespace BadgesAPI {
@@ -79,6 +81,30 @@ namespace BadgesAPI {
     struct SetBadgeProfileCallbackEvent final : geode::Event {
         SetBadgeProfileCallbackEvent() {}
         using Fn = void(const std::string& id, ProfileCallback&& onProfile);
+        Fn* fn = nullptr;
+    };
+
+    struct SetBadgeShownInCommentsEvent final : geode::Event {
+        SetBadgeShownInCommentsEvent() {}
+        using Fn = void(const std::string& id, const bool shouldShow);
+        Fn* fn = nullptr;
+    };
+
+    struct GetBadgeShownInCommentsEvent final : geode::Event {
+        GetBadgeShownInCommentsEvent() {}
+        using Fn = bool(const std::string& id);
+        Fn* fn = nullptr;
+    };
+
+    struct SetBadgeShownInProfilesEvent final : geode::Event {
+        SetBadgeShownInProfilesEvent() {}
+        using Fn = void(const std::string& id, const bool shouldShow);
+        Fn* fn = nullptr;
+    };
+
+    struct GetBadgeShownInProfilesEvent final : geode::Event {
+        GetBadgeShownInProfilesEvent() {}
+        using Fn = bool(const std::string& id);
         Fn* fn = nullptr;
     };
 
@@ -186,6 +212,42 @@ namespace BadgesAPI {
             return event.fn;
         })();
         if (fn) fn(id, onProfile);
+    }
+
+    inline void setShowInComments(const std::string& id, const bool shouldShow) {
+        static auto fn = ([] {
+            SetBadgeShownInCommentsEvent event;
+            event.post();
+            return event.fn;
+        })();
+        if (fn) fn(id, shouldShow);
+    }
+
+    inline void getShowInComments(const std::string& id) {
+        static auto fn = ([] {
+            GetBadgeShownInCommentsEvent event;
+            event.post();
+            return event.fn;
+        })();
+        if (fn) fn(id);
+    }
+
+    inline void setShowInProfiles(const std::string& id, const bool shouldShow) {
+        static auto fn = ([] {
+            SetBadgeShownInProfilesEvent event;
+            event.post();
+            return event.fn;
+        })();
+        if (fn) return fn(id, shouldShow);
+    }
+
+    inline void getShowInProfiles(const std::string& id) {
+        static auto fn = ([] {
+            GetBadgeShownInProfilesEvent event;
+            event.post();
+            return event.fn;
+        })();
+        if (fn) fn(id);
     }
 
     inline void showBadge(const Badge& badge) {

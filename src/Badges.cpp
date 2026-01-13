@@ -16,11 +16,13 @@ void Badges::showBadge(const Badge& badge) {
     auto badgeIter = m_badges.find(badge.badgeID);
     if (badgeIter == m_badges.end()) return;
 
-    if (auto cell = static_cast<BadgesCommentCell*>(typeinfo_cast<CommentCell*>(badge.targetNode.data()))) {
-        cell->addBadge(badgeIter->second);
+    auto badgeInfo = badgeIter->second;
+
+    if (auto cell = static_cast<BadgesCommentCell*>(typeinfo_cast<CommentCell*>(badge.targetNode.data())); cell && badgeInfo.showInComments) {
+        cell->addBadge(badgeInfo);
     }
-    else if (auto profile = static_cast<BadgesProfilePage*>(typeinfo_cast<ProfilePage*>(badge.targetNode.data()))) {
-        profile->addBadge(badgeIter->second);
+    else if (auto profile = static_cast<BadgesProfilePage*>(typeinfo_cast<ProfilePage*>(badge.targetNode.data())); profile && badgeInfo.showInProfiles) {
+        profile->addBadge(badgeInfo);
     }
 }
 
@@ -58,6 +60,30 @@ void Badges::setProfileCallback(const std::string& id, ProfileCallback&& onProfi
     auto badgeIter = m_badges.find(id);
     if (badgeIter == m_badges.end()) return;
     badgeIter->second.onProfile = onProfile;
+}
+
+void Badges::setShouldShowInComments(const std::string& id, const bool shouldShow) {
+    auto badgeIter = m_badges.find(id);
+    if (badgeIter == m_badges.end()) return;
+    badgeIter->second.showInComments = shouldShow;
+}
+
+bool Badges::getShouldShowInComments(const std::string& id) {
+    auto badgeIter = m_badges.find(id);
+    if (badgeIter == m_badges.end()) return false;
+    return badgeIter->second.showInComments;
+}
+
+void Badges::setShouldShowInProfiles(const std::string& id, const bool shouldShow) {
+    auto badgeIter = m_badges.find(id);
+    if (badgeIter == m_badges.end()) return;
+    badgeIter->second.showInProfiles = shouldShow;
+}
+
+bool Badges::getShouldShowInProfiles(const std::string& id) {
+    auto badgeIter = m_badges.find(id);
+    if (badgeIter == m_badges.end()) return false;
+    return badgeIter->second.showInProfiles;
 }
 
 void Badges::registerBadge(const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile) {

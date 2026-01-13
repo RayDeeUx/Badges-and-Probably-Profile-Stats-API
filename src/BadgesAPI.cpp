@@ -61,6 +61,34 @@ $execute {
         return ListenerResult::Stop;
     });
 
+    new EventListener<EventFilter<BadgesAPI::SetBadgeShownInCommentsEvent>>(+[](BadgesAPI::SetBadgeShownInCommentsEvent* event) {
+        event->fn = +[](const std::string& id, const bool shouldShow) {
+            Badges::get()->setShouldShowInComments(id, shouldShow);
+        };
+        return ListenerResult::Stop;
+    });
+
+    new EventListener<EventFilter<BadgesAPI::GetBadgeShownInCommentsEvent>>(+[](BadgesAPI::GetBadgeShownInCommentsEvent* event) {
+        event->fn = +[](const std::string& id) {
+            return Badges::get()->getShouldShowInComments(id);
+        };
+        return ListenerResult::Stop;
+    });
+
+    new EventListener<EventFilter<BadgesAPI::SetBadgeShownInProfilesEvent>>(+[](BadgesAPI::SetBadgeShownInProfilesEvent* event) {
+        event->fn = +[](const std::string& id, const bool shouldShow) {
+            Badges::get()->setShouldShowInProfiles(id, shouldShow);
+        };
+        return ListenerResult::Stop;
+    });
+
+    new EventListener<EventFilter<BadgesAPI::GetBadgeShownInProfilesEvent>>(+[](BadgesAPI::GetBadgeShownInProfilesEvent* event) {
+        event->fn = +[](const std::string& id) {
+            return Badges::get()->getShouldShowInProfiles(id);
+        };
+        return ListenerResult::Stop;
+    });
+
     new EventListener<EventFilter<BadgesAPI::ShowBadgeEvent>>(+[](BadgesAPI::ShowBadgeEvent* event) {
         event->fn = +[](const Badge& badge) {
             Badges::get()->showBadge(badge);
