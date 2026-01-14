@@ -11,6 +11,7 @@ $execute {
         };
         return ListenerResult::Stop;
     });
+
     new EventListener<EventFilter<BadgesAPI::RegisterBadgeAdvancedEvent>>(+[](BadgesAPI::RegisterBadgeAdvancedEvent* event) {
         event->fn = +[](const std::string& id, const std::string& name, const std::string& description, BadgeCallback&& createBadge, ProfileCallback&& onProfile, const bool showInComments, const bool showInProfiles) {
             Badges::get()->registerBadgeAdvanced(id, name, description, std::move(createBadge), std::move(onProfile), showInComments, showInProfiles);
